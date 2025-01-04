@@ -37,4 +37,3 @@ def get_weather(lat, lon):
     else:
         print(response)
         return {"error": f"Failed to fetch weather data: {response.status_code}"}
-    

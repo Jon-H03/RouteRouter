@@ -6,7 +6,7 @@ load_dotenv()
 
 RECREATION_API_KEY = os.getenv("RECREATION_API_KEY")
 
-def get_recreation_data(lat, lon, activity):
+def get_recreation_locations(lat, lon, activity):
     url = f"https://ridb.recreation.gov/api/v1/facilities"
     headers = {"apikey": os.getenv("RECREATION_API_KEY")}
     params = {
