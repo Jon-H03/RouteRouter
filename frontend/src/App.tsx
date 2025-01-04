@@ -1,44 +1,33 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { fetchSuggestions } from "./services/locationServices";
 
 function LandingPage() {
   const [location, setLocation] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  console.log(process.env.REACT_APP_OPENCAGE_API_KEY);
+  const [isValid, setIsValid] = useState(false);
 
-  const fetchSuggestions = async (query: string) => {
-    if (!query) {
-      setSuggestions([]);
-      return;
-    }
-
-    try {
-      const response = await axios.get("https://api.opencagedata.com/geocode/v1/json", {
-        params: {
-          q: query,
-          key: process.env.REACT_APP_OPENCAGE_API_KEY,
-          limit: 5,
-          countrycode: "us",
-        },
-      });
-
-      const cities = response.data.results.map((result: any) => result.formatted);
-      setSuggestions(cities);
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-      setSuggestions([]);
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setLocation(value);
-    fetchSuggestions(value);
+
+    const cities = await fetchSuggestions(value);
+    setSuggestions(cities);
+
+    setIsValid(cities.includes(value));
   };
 
   const handleSelectSuggestion = (city: string) => {
     setLocation(city);
     setSuggestions([]);
+    setIsValid(true);
+  };
+
+  const handleSearch = () => {
+    if (!isValid) {
+      alert("Please select a valid location from the suggestions.");
+      return;
+    }
+    console.log(`Selected location: ${location}`);
   };
 
   return (
@@ -77,8 +66,13 @@ function LandingPage() {
           )}
         </div>
         <button
-          onClick={() => console.log(`Selected location: ${location}`)}
-          className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          onClick={handleSearch}
+          className={`mt-4 px-4 py-2 rounded text-white ${
+            isValid
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-gray-300 cursor-not-allowed"
+          }`}
+          disabled={!isValid}
         >
           Search
         </button>
