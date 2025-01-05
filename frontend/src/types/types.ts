@@ -10,7 +10,9 @@ export interface Location {
   latitude: number;
   longitude: number;
   reservable: boolean;
-  campsites: Campsite[];
+  image_url: string;
+  campsites: number;
+  reservation_url: string;
 }
 
 export interface CampingDataResponse {
