@@ -5,7 +5,7 @@ from services.get_weather import get_city_coordinates, get_weather
 app = Flask(__name__)
 
 
-@app.route("/activity", methods=["POST"])
+@app.route("/campsites", methods=["POST"])
 def get_acticity_data():
     data = request.json
     city = data.get("city")
