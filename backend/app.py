@@ -22,9 +22,9 @@ def get_acticity_data():
             return jsonify({"error": "Could not fetch coordinates for the given city"}), 404
         
         # Fetch recreation data
-        locations = get_camping_data(lat, lon)
-        print(locations)
-        if "error" in locations:
+        camping_locations = get_camping_data(lat, lon)
+        print(camping_locations)
+        if "error" in camping_locations:
             return jsonify({"error": "Could not fetch locations."}), 500
         
         # Fetch weather data
@@ -35,7 +35,7 @@ def get_acticity_data():
         response = {
             "city": city,
             "coordinates": {"latitude": lat, "longitude": lon},
-            "locations": locations,
+            "locations": camping_locations,
             "weather": weather
         }
         return jsonify(response), 200
