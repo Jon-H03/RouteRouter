@@ -49,3 +49,66 @@ SiteSighter is a web application designed to provide AI-driven camping recommend
 - **External APIs**:
   - Weather Information: [**OpenCage Geosearch API**](https://opencagedata.com/)
   - Campsite Information: [**Recreation.gov API**](https://ridb.recreation.gov/)
+
+## Architecture Diagram
+```mermaid
+flowchart TB
+    %% Styling
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px
+    classDef userNode fill:#ffffff,stroke:#000,stroke-width:3px
+    classDef container fill:#ffffff,stroke:#666,stroke-width:2px,stroke-dasharray: 5 5
+    
+    subgraph Client["Frontend (Client)"]
+        direction TB
+        UI[Landing Page]
+        SearchForm[Search Form]
+        ResultsView[Results Display]
+    end
+
+    subgraph Server["Backend Server"]
+        direction TB
+        API[API Layer]
+        GeoService[Geolocation Service]
+        WeatherService[Weather Service]
+        CampgroundService[Campground Service]
+        ModelService[GPT Model Service]
+    end
+
+    subgraph External["External Services"]
+        direction TB
+        GeoAPI[Geocoding API]
+        WeatherAPI[Weather API]
+        CampAPI[Campgrounds API]
+        GPT[GPT API]
+    end
+
+    %% User Flow
+    User((User)) -->|Visits| UI
+    UI -->|Displays| SearchForm
+    SearchForm -->|City & Radius| API
+
+    %% Backend Flow
+    API -->|City| GeoService
+    GeoService -->|Request| GeoAPI
+    GeoAPI -->|Lat/Long| GeoService
+    
+    GeoService -->|Coordinates| WeatherService
+    WeatherService -->|Request| WeatherAPI
+    WeatherAPI -->|Weather Data| WeatherService
+    
+    GeoService -->|Coordinates & Radius| CampgroundService
+    CampgroundService -->|Request| CampAPI
+    CampAPI -->|Campsite Data| CampgroundService
+    
+    WeatherService & CampgroundService -->|Weather & Campsite Data| ModelService
+    ModelService -->|Request| GPT
+    GPT -->|Recommendation| ModelService
+    
+    ModelService -->|Combined Response| API
+    API -->|Complete Dataset| ResultsView
+    ResultsView -->|Display Results| User
+
+    %% Apply classes
+    class User userNode
+    class Client,Server,External container
+```
