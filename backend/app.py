@@ -11,6 +11,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def get_acticity_data():
     data = request.json
     city = data.get("city")
+    radius = data.get("radius", 50)
 
     if not city:
         return jsonify({"error": "A city or activity was not entered.\n"}), 404
@@ -22,8 +23,7 @@ def get_acticity_data():
             return jsonify({"error": "Could not fetch coordinates for the given city"}), 404
         
         # Fetch recreation data
-        camping_locations = get_camping_data(lat, lon)
-        print(camping_locations)
+        camping_locations = get_camping_data(lat, lon, radius)
         if "error" in camping_locations:
             return jsonify({"error": "Could not fetch locations."}), 500
         
