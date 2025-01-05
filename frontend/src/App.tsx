@@ -3,16 +3,16 @@ import LandingPage from "./components/LandingPage";
 import ResultsPage from "./components/ResultsPage";
 
 const App = () => {
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useState<{ city: string; radius: number } | null>(null);
 
-  const handleSearch = (city: string) => {
-    setSelectedCity(city); 
+  const handleSearch = (city: string, radius: number) => {
+    setSearchParams({ city, radius }); 
   };
 
   return (
     <div>
-      {selectedCity ? (
-        <ResultsPage city={selectedCity} /> 
+      {searchParams ? (
+        <ResultsPage city={searchParams.city} radius={searchParams.radius} />
       ) : (
         <LandingPage onSearch={handleSearch} />
       )}
