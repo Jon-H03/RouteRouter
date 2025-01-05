@@ -37,7 +37,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onSearch }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 bg-animate-gradient animate-fade-in">
       <header className="mb-12 text-center">
         <h1 className="text-6xl font-bold text-green-600">SiteSighter</h1>
         <p className="text-xl text-gray-600 mt-4">
