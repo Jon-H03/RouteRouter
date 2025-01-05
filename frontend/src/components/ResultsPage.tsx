@@ -3,7 +3,7 @@ import { fetchCampingData } from "../services/fetchCampingData";
 import { useLoadingMessages } from "../services/loadingMessages";
 import { Location, ResultsPageProps } from "../types/types";
 
-export default function ResultsPage({ city }: ResultsPageProps) {
+export default function ResultsPage({ city, radius }: ResultsPageProps) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export default function ResultsPage({ city }: ResultsPageProps) {
   useEffect(() => {
     const loadCampingData = async () => {
       try {
-        const data = await fetchCampingData(city);
+        const data = await fetchCampingData(city, radius);
         setLocations(data.locations);
       } catch (err) {
         setError("Failed to load camping data.");
@@ -80,9 +80,19 @@ export default function ResultsPage({ city }: ResultsPageProps) {
                 <h2 className="text-lg font-semibold">
                   {location.facility_name}
                 </h2>
-                <p className="text-gray-600 line-clamp-3">
+                <p
+                  className={`text-gray-600 ${
+                    expandedIndex === index ? "" : "line-clamp-3"
+                  }`}
+                >
                   {location.description.replace(/<[^>]*>/g, "")}
                 </p>
+                <button
+                  onClick={() => toggleExpansion(index)}
+                  className="text-blue-500 hover:underline mt-2"
+                >
+                  {expandedIndex === index ? "View Less" : "View More"}
+                </button>
                 <p className="text-sm mt-2 text-gray-500">
                   Latitude: {location.latitude}, Longitude: {location.longitude}
                 </p>
