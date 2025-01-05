@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from services.get_locations import get_camping_data
 from services.get_weather import get_city_coordinates, get_weather
+from services.llm import generate_recommendations
 from flask_cors import CORS
 
 
@@ -32,11 +33,17 @@ def get_acticity_data():
         if "error" in weather:
             return jsonify({"error": "Could not fetch weather"}), 500
         
+        # Fetch llm observation
+        llm_response = generate_recommendations(weather, camping_locations)
+        if "error" in llm_response:
+            return jsonify({"error": "Could not fetch observations"}), 500
+        
         response = {
             "city": city,
             "coordinates": {"latitude": lat, "longitude": lon},
             "locations": camping_locations,
-            "weather": weather
+            "weather": weather,
+            "llm_response": llm_response
         }
         return jsonify(response), 200
     
