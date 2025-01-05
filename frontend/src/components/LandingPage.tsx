@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { fetchSuggestions } from "../services/locationServices";
-import { fetchCampingData } from "../services/fetchCampingData";
 import { LandingPageProps } from "../types/types";
 
 const LandingPage: React.FC<LandingPageProps> = ({ onSearch }) => {
@@ -40,9 +39,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onSearch }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
       <header className="mb-12 text-center">
-        <h1 className="text-6xl font-bold text-green-600">RouteRouter</h1>
+        <h1 className="text-6xl font-bold text-green-600">SiteSighter</h1>
         <p className="text-xl text-gray-600 mt-4">
-          Your adventure starts here!
+          Sighting the best campsites 🏕️
         </p>
       </header>
 
