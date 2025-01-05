@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 from services.get_locations import get_camping_data
 from services.get_weather import get_city_coordinates, get_weather
+from flask_cors import CORS
+
 
 app = Flask(__name__)
-
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route("/campsites", methods=["POST"])
 def get_acticity_data():
