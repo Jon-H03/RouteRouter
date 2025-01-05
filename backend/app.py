@@ -28,15 +28,20 @@ def get_acticity_data():
         if "error" in camping_locations:
             return jsonify({"error": "Could not fetch locations."}), 500
         
+        
         # Fetch weather data
         weather = get_weather(lat, lon)
         if "error" in weather:
             return jsonify({"error": "Could not fetch weather"}), 500
         
         # Fetch llm observation
-        llm_response = generate_recommendations(weather, camping_locations)
-        if "error" in llm_response:
-            return jsonify({"error": "Could not fetch observations"}), 500
+        if camping_locations:
+            llm_response = generate_recommendations(weather, camping_locations)
+            if "error" in llm_response:
+                return jsonify({"error": "Could not fetch observations"}), 500
+        else:
+            llm_response = "AI Observations can not be loaded at this time as no campsites were found."
+        
         
         response = {
             "city": city,

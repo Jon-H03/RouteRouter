@@ -29,13 +29,11 @@ def generate_recommendations(weather, campsites):
         )
         
         refined_response = clean_llm_response(response.choices[0].message.content)
-        if not refined_response:
-            refined_response = "AI Observations can not be loaded at this time. Sorry. 😔"
         return refined_response
     except Exception as e:
         return f"Error generating recommendations: {str(e)}"
     
-    
+
 def clean_llm_response(response):
     response = response.replace("Observation:", "").strip()
     import re
