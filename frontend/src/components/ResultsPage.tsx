@@ -34,7 +34,7 @@ export default function ResultsPage({ city, radius }: ResultsPageProps) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 bg-animate-gradient">
         <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-6"></div>
         <p className="text-lg text-gray-600">{loadingMessage}</p>
       </div>
@@ -54,7 +54,7 @@ export default function ResultsPage({ city, radius }: ResultsPageProps) {
         </a>
       </div>
       <div className="space-y-6">
-        <div className="p-4 border rounded bg-gray-50 shadow">
+        <div className="p-4 border rounded bg-gray-50 shadow bg-animate-gradient">
           <h2 className="text-xl font-bold mb-2 text-green-600">
             SierrAI Observations
           </h2>
