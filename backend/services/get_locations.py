@@ -6,63 +6,62 @@ load_dotenv()
 
 RECREATION_API_KEY = os.getenv("RECREATION_API_KEY")
 
-def get_recreation_locations(lat, lon, radius=50, limit=50, activity=None):
+def fetch_facilities(lat, lon, radius=500, limit=50):
     url = "https://ridb.recreation.gov/api/v1/facilities"
-    headers = {"apikey": os.getenv("RECREATION_API_KEY")}
+    headers = {"apikey": RECREATION_API_KEY}
     params = {
         "latitude": lat,
         "longitude": lon,
         "radius": radius,
-        "limit": limit
+        "limit": limit,
     }
 
     response = requests.get(url, headers=headers, params=params)
     if response.status_code != 200:
         return {"error": f"Failed to fetch facilities: {response.status_code}"}
 
-    raw_data = response.json()
-    formatted_facilities_data = transform_facilities_data(raw_data)
-    print(formatted_facilities_data)
-    return formatted_facilities_data
-    
+    return response.json().get("RECDATA", [])
 
-def transform_facilities_data(raw_data):
-    transformed = []
-    facilities_data = raw_data.get("RECDATA")
-    
-    for facility in facilities_data:
-        # Ensure each facility is a dictionary
-        if not isinstance(facility, dict):
+
+def fetch_campsites_for_facility(facility_id):
+    url = f"https://ridb.recreation.gov/api/v1/facilities/{facility_id}/campsites"
+    headers = {"apikey": RECREATION_API_KEY}
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return []
+
+    campsites = response.json().get("RECDATA", [])
+    return campsites
+
+
+def get_camping_data(lat, lon, radius=50, limit=50):
+    facilities = fetch_facilities(lat, lon, radius, limit)
+    camping_data = []
+
+    for facility in facilities:
+        facility_id = facility.get("FacilityID")
+        if not facility_id:
             continue
 
-        # Extract relevant details with default values
-        facility_info = {
-            "name": facility.get("FacilityName", "Unknown Facility"),
-            "description": facility.get("FacilityDescription", "No description available."),
-            "latitude": facility.get("FacilityLatitude"),
-            "longitude": facility.get("FacilityLongitude"),
-            "type": facility.get("FacilityTypeDescription", "Unknown Type"),
-            "reservable": facility.get("Reservable", False),
-            "phone": facility.get("FacilityPhone", "No phone available"),
-            "email": facility.get("FacilityEmail", "No email available"),
-            "address": "; ".join(
-                [
-                    addr.get("StreetAddress1", "")
-                    for addr in facility.get("FACILITYADDRESS", [])
-                    if isinstance(addr, dict) and addr.get("StreetAddress1")
-                ]
-            ),
-            "media": None,
-        }
-
-        media_list = facility.get("MEDIA", [])
-        if isinstance(media_list, list):
-            primary_media = next(
-                (media.get("URL") for media in media_list if isinstance(media, dict) and media.get("IsPrimary")),
-                None,
+        campsites = fetch_campsites_for_facility(facility_id)
+        if campsites:
+            camping_data.append(
+                {
+                    "facility_name": facility.get("FacilityName", "Unknown Facility"),
+                    "description": facility.get("FacilityDescription", "No description available."),
+                    "latitude": facility.get("FacilityLatitude"),
+                    "longitude": facility.get("FacilityLongitude"),
+                    "reservable": facility.get("Reservable", False),
+                    "campsites": [
+                        {
+                            "name": campsite.get("CampsiteName", "Unknown Campsite"),
+                            "type": campsite.get("CampsiteType", "Unknown Type"),
+                            "accessible": campsite.get("CampsiteAccessible", False),
+                        }
+                        for campsite in campsites
+                    ],
+                }
             )
-            facility_info["media"] = primary_media or (media_list[0]["URL"] if media_list else None)
 
-        transformed.append(facility_info)
-
-    return transformed
+    return camping_data

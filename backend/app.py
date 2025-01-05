@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from services.get_locations import get_recreation_locations
+from services.get_locations import get_camping_data
 from services.get_weather import get_city_coordinates, get_weather
 
 app = Flask(__name__)
@@ -9,9 +9,8 @@ app = Flask(__name__)
 def get_acticity_data():
     data = request.json
     city = data.get("city")
-    activity = data.get("activity")
 
-    if not city or not activity:
+    if not city:
         return jsonify({"error": "A city or activity was not entered.\n"}), 404
     
     try:
@@ -21,7 +20,7 @@ def get_acticity_data():
             return jsonify({"error": "Could not fetch coordinates for the given city"}), 404
         
         # Fetch recreation data
-        locations = get_recreation_locations(lat, lon, activity)
+        locations = get_camping_data(lat, lon)
         print(locations)
         if "error" in locations:
             return jsonify({"error": "Could not fetch locations."}), 500
@@ -33,7 +32,6 @@ def get_acticity_data():
         
         response = {
             "city": city,
-            "activity": activity,
             "coordinates": {"latitude": lat, "longitude": lon},
             "locations": locations,
             "weather": weather
