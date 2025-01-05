@@ -21,8 +21,9 @@ export interface CampingDataResponse {
 
 export interface ResultsPageProps {
   city: string;
+  radius: number;
 }
 
 export interface LandingPageProps {
-  onSearch: (city: string) => void;
+  onSearch: (city: string, radius: number) => void;
 }
