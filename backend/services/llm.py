@@ -16,7 +16,7 @@ def generate_recommendations(weather, campsites):
             Campsites:
             {', '.join([site['facility_name'] for site in campsites])}
 
-            Please generate a helpful and concise observation about the weather and suggest the best campsites for the user to visit.
+            Please generate a helpful and concise observation about the weather and suggest the best campsites for the user to visit. Pl
         """
     
     try:
@@ -28,9 +28,16 @@ def generate_recommendations(weather, campsites):
             model="gpt-3.5-turbo"
         )
         
-        refined_response = response.choices[0].message.content
+        refined_response = clean_llm_response(response.choices[0].message.content)
         if not refined_response:
             refined_response = "AI Observations can not be loaded at this time. Sorry. 😔"
         return refined_response
     except Exception as e:
         return f"Error generating recommendations: {str(e)}"
+    
+    
+def clean_llm_response(response):
+    response = response.replace("Observation:", "").strip()
+    import re
+    response = re.sub(r'\d+\.\s', '', response)
+    return response
