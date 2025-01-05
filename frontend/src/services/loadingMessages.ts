@@ -36,7 +36,7 @@ export const useLoadingMessages = () => {
     }, intervalMs);
 
     return () => clearInterval(messageInterval);
-  }, []);
+  }, [messages, intervalMs]);
 
   return currentMessage;
 };
