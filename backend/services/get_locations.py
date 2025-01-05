@@ -44,6 +44,19 @@ def get_camping_data(lat, lon, radius=50, limit=50):
         if not facility_id:
             continue
 
+        # Extract primary image from ENTITYMEDIA
+        media_list = facility.get("MEDIA", [])
+        primary_image = None
+        if isinstance(media_list, list):
+            # Check for the primary image
+            primary_image = next(
+                (media.get("URL") for media in media_list if media.get("IsPrimary")),
+                None
+            )
+            if not primary_image and media_list:
+                primary_image = media_list[0].get("URL")
+
+
         campsites = fetch_campsites_for_facility(facility_id)
         if campsites:
             camping_data.append(
@@ -53,14 +66,8 @@ def get_camping_data(lat, lon, radius=50, limit=50):
                     "latitude": facility.get("FacilityLatitude"),
                     "longitude": facility.get("FacilityLongitude"),
                     "reservable": facility.get("Reservable", False),
-                    "campsites": [
-                        {
-                            "name": campsite.get("CampsiteName", "Unknown Campsite"),
-                            "type": campsite.get("CampsiteType", "Unknown Type"),
-                            "accessible": campsite.get("CampsiteAccessible", False),
-                        }
-                        for campsite in campsites
-                    ],
+                    "image_url": primary_image,
+                    "campsites": len(campsites),
                 }
             )
 
