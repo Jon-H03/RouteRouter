@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CampingDataResponse } from "../types/types"; 
-const BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:5003";
+const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
 export const fetchCampingData = async (city: string, radius: number): Promise<CampingDataResponse> => {
   try {
