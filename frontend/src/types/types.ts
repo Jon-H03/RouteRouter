@@ -17,6 +17,7 @@ export interface Location {
 
 export interface CampingDataResponse {
   locations: Location[];
+  llm_response: string;
 }
 
 export interface ResultsPageProps {

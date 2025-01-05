@@ -7,6 +7,7 @@ export default function ResultsPage({ city, radius }: ResultsPageProps) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [observation, setObservation] = useState<string>("");
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const toggleExpansion = (index: number) => {
@@ -20,6 +21,7 @@ export default function ResultsPage({ city, radius }: ResultsPageProps) {
       try {
         const data = await fetchCampingData(city, radius);
         setLocations(data.locations);
+        setObservation(data.llm_response);
       } catch (err) {
         setError("Failed to load camping data.");
       } finally {
@@ -28,7 +30,7 @@ export default function ResultsPage({ city, radius }: ResultsPageProps) {
     };
 
     loadCampingData();
-  }, [city]);
+  }, [city, radius]);
 
   if (loading) {
     return (
@@ -52,6 +54,12 @@ export default function ResultsPage({ city, radius }: ResultsPageProps) {
         </a>
       </div>
       <div className="space-y-6">
+        <div className="p-4 border rounded bg-gray-50 shadow">
+          <h2 className="text-xl font-bold mb-2 text-green-600">
+            SierrAI Observations
+          </h2>
+          <p className="text-gray-700">{observation}</p>
+        </div>
         {locations.length === 0 ? (
           <div className="text-center text-gray-600 text-lg">
             No campsites found. Sorry 😔
