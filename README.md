@@ -2,6 +2,8 @@
  
 SiteSighter is a web application designed to provide AI-driven camping recommendations based on weather, location, and other factors. It integrates with APIs like OpenAI for recommendations and external camping data sources to deliver a seamless experience for outdoor enthusiasts.
 
+Check it out [**here**](https://site-sighter.vercel.app/).
+
 ## **Key Features**
 
 ### **Frontend**
